@@ -1,0 +1,63 @@
+#define _CRT_SECURE_NO_WARNINGS
+
+#pragma once
+#include <string.h>
+
+int GetMaxBit(int* array, int size)
+{
+	size_t count = 1;
+	int radix = 10;
+	for(size_t idx = 1;idx<size; ++idx)
+	{
+		while(array[idx]>=radix)
+		{
+			count++;
+			radix *= 10;
+		}
+	}
+	return count;
+}
+
+
+void RadixSortLSD(int arr[], size_t size)
+{
+	//1.ȷ������ֵ�ж���λ
+	int bit = GetMaxBit(arr,size);
+	int radix = 1;
+    int *bucket = new int[size];    //�����ռ�Ͱ
+	for(size_t idx = 0;idx < bit; ++idx)
+	{
+		int count[10] = {0};
+		for(size_t idx = 0; idx< size; ++idx)
+		{
+			count[arr[idx]/radix%10]++;//2.ͳ��ÿ��radixλ�ϳ��ֵ����ִ���
+		}
+		//3.Ѱ��ÿ��Ͱ����ʼλ��
+		int Addr[10] = {0};
+		for(size_t idx = 1;idx<10; ++idx)
+		{
+			Addr[idx] = Addr[idx-1]+count[idx-1];
+		}
+		//4.��Ԫ�ط��õ���Ӧ��Ͱ��
+		for(size_t idx = 0; idx < size; ++idx)
+		{
+			int k = arr[idx]/radix%10;//Ѱ��Ͱ��λ��
+			bucket[Addr[k]] = arr[idx];//Addr[k]������Ͱ����ʼλ��
+			Addr[k]++;
+		}
+		//5.��Ԫ�طŻ�ԭ�ռ�
+		memcpy(arr,bucket,size*sizeof(arr[0]));
+		radix *=10; //����ǰ��һλ
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
